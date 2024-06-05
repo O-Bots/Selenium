@@ -67,7 +67,7 @@ describe("Tests for account functionality", ()=> {
     await driver.findElement(By.xpath(genderRadio[rngGenderRadio])).click();
 
     //Password
-    await driver.findElement(By.id("password")).sendKeys("password");
+    await driver.findElement(By.id("password")).sendKeys(accountDetails.password);
 
     
     //Array for dob dropdowns
@@ -179,7 +179,7 @@ describe("Tests for account functionality", ()=> {
         await driver.findElement(By.xpath(genderRadio[rngGenderRadio])).click();
     
         //Password
-        await driver.findElement(By.id("password")).sendKeys("password");
+        await driver.findElement(By.id("password")).sendKeys(accountDetails.password);
     
         
         //Array for dob dropdowns
