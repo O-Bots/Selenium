@@ -1,0 +1,119 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 2,
+    "passes": 2,
+    "pending": 0,
+    "failures": 0,
+    "start": "2024-06-04T16:48:43.500Z",
+    "end": "2024-06-04T16:49:10.446Z",
+    "duration": 26946,
+    "testsRegistered": 2,
+    "passPercent": 100,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 0,
+    "hasSkipped": false
+  },
+  "results": [
+    {
+      "uuid": "a331615e-8b05-4ae2-9ef0-5d71cea5e3c6",
+      "title": "",
+      "fullFile": "C:\\Users\\Okechi\\Desktop\\Javascript\\Projects\\Selenium\\tests\\firstTest.js",
+      "file": "\\tests\\firstTest.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "6625c8ca-6298-41f7-a1dc-9d479e20cc7a",
+          "title": "Tests for account functionality",
+          "fullFile": "C:\\Users\\Okechi\\Desktop\\Javascript\\Projects\\Selenium\\tests\\firstTest.js",
+          "file": "\\tests\\firstTest.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Successfully registers a user and deletes account",
+              "fullTitle": "Tests for account functionality Successfully registers a user and deletes account",
+              "timedOut": false,
+              "duration": 14520,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Launch the chrome browser\nlet driver = await new Builder().forBrowser(\"chrome\").build();\n//Navigate to the webpage\nawait driver.get(\"https://www.automationexercise.com/\");\n\n//Is there a consent pop up, if there is select consent to close\nconst isConsentPopupVisible = await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\")).isDisplayed();\nif (isConsentPopupVisible) await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\", Key.RETURN)).click();\n//Select \"Signup/Login\"\nawait driver.findElement(By.className(\"fa fa-lock\", Key.RETURN)).click()\n\n//Is signup form visible\nconst isSignupVisible = await driver.findElement(By.className(\"signup-form\")).isDisplayed();\nif (isSignupVisible) {\n    //Enter Name and Email\n    await driver.findElement(By.xpath(\"//div[@class='signup-form']/form/input[2]\")).sendKeys(accountDetails.account_name)\n    await driver.findElement(By.xpath(\"//div[@class='signup-form']/form/input[3]\")).sendKeys(accountDetails.email)\n};\n//Find submit button and click\nawait driver.findElement(By.xpath(\"//div[@class='signup-form']/form/button\", Key.RETURN)).click()\n//Is login-form visible\nconst isLoginPageVisible = await driver.findElement(By.className(\"login-form\")).isDisplayed()\n\n//Chai assert if it's not\nexpect(isLoginPageVisible).to.equal(true);\n//Enter account information//\n//Array for gender options\nconst genderRadio = [\"//span/input[@id='id_gender1']\", \"//span/input[@id='id_gender2']\"]\n//RNG for gender options\nconst rngGenderRadio = Math.floor(Math.random() * genderRadio.length);\n//Select gender option\nawait driver.findElement(By.xpath(genderRadio[rngGenderRadio])).click();\n//Password\nawait driver.findElement(By.id(\"password\")).sendKeys(\"password\");\n\n//Array for dob dropdowns\nconst dobDropdown = {\n    days: accountDetails.dob.day,\n    months: accountDetails.dob.month,\n    years: accountDetails.dob.year\n}\n\nfor (const [key, value] of Object.entries(dobDropdown)){\n    const dropdown = await driver.findElement(By.id(key));\n    const select = new Select(dropdown);\n    await select.selectByValue(value);\n};\n//Sign up for the newsletter and special offers\nawait driver.findElement(By.id(\"newsletter\")).click();\nawait driver.findElement(By.id(\"optin\")).click();\n//Fill in personal details\nawait driver.findElement(By.id(\"first_name\")).sendKeys(accountDetails.first_name);\nawait driver.findElement(By.id(\"last_name\")).sendKeys(accountDetails.last_name);\nawait driver.findElement(By.id(\"company\")).sendKeys(accountDetails.company);\nawait driver.findElement(By.id(\"address1\")).sendKeys(accountDetails.address);\nawait driver.findElement(By.id(\"state\")).sendKeys(accountDetails.state);\nawait driver.findElement(By.id(\"city\")).sendKeys(accountDetails.city);\nawait driver.findElement(By.id(\"zipcode\")).sendKeys(accountDetails.zipcode);\nawait driver.findElement(By.id(\"mobile_number\")).sendKeys(accountDetails.mobile_number);\n//Submit account information\nawait driver.findElement(By.className(\"btn btn-default\")).click();\n//Check if account was created succesfully\nconst afterAccCreation = await driver.findElement(By.xpath(\"//div/h2[@class='title text-center']\")).getText();\nexpect(afterAccCreation).to.equal(\"ACCOUNT CREATED!\");\n//Click continue\nawait driver.findElement(By.className(\"btn btn-primary\")).click();\nconst adAfterAccCreation = await driver.getCurrentUrl()\n\nif (adAfterAccCreation.includes(\"#google_vignette\")) await driver.navigate().refresh();\n//Click continue\nawait driver.findElement(By.className(\"btn btn-primary\")).click();\n\nconst pageLoadCheck = await driver.findElement(By.className(\"fa fa-user\"))\nawait driver.wait(until.elementIsVisible(pageLoadCheck), 3000)\n//Check login user name\nconst userNameTextCheck = await driver.findElement(By.xpath(\"//ul[@class='nav navbar-nav']/li[10]/a/b\")).getText()\nexpect(userNameTextCheck).to.equal(accountDetails.account_name);\n//Click delete account\nawait driver.findElement(By.xpath(\"//ul[@class='nav navbar-nav']/li[5]\")).click();\n//Check if account was deleted succesfully\nconst afterAccDeletion = await driver.findElement(By.xpath(\"//div/h2[@class='title text-center']\")).getText();\n\nexpect(afterAccDeletion).to.equal(\"ACCOUNT DELETED!\");\n//Click continue\nawait driver.findElement(By.className(\"btn btn-primary\")).click();\n//Close the browser\nawait driver.close()",
+              "err": {},
+              "uuid": "697181df-5f09-4ef5-ade2-45e39df01a5a",
+              "parentUUID": "6625c8ca-6298-41f7-a1dc-9d479e20cc7a",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Successfully registers a user",
+              "fullTitle": "Tests for account functionality Successfully registers a user",
+              "timedOut": false,
+              "duration": 12420,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Launch the chrome browser\nlet driver = await new Builder().forBrowser(\"chrome\").build();\n    \n//Navigate to the webpage\nawait driver.get(\"https://www.automationexercise.com/\");\n\n//Is there a consent pop up, if there is select consent to close\nconst isConsentPopupVisible = await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\")).isDisplayed();\nif (isConsentPopupVisible) await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\", Key.RETURN)).click();\n    \n//Select \"Signup/Login\"\nawait driver.findElement(By.className(\"fa fa-lock\", Key.RETURN)).click()\n\n//Is signup form visible\nconst isSignupVisible = await driver.findElement(By.className(\"signup-form\")).isDisplayed();\n    \nif (isSignupVisible) {\n    //Enter Name and Email\n    await driver.findElement(By.xpath(\"//div[@class='signup-form']/form/input[2]\")).sendKeys(accountDetails.account_name)\n    await driver.findElement(By.xpath(\"//div[@class='signup-form']/form/input[3]\")).sendKeys(accountDetails.email)\n};\n    \n//Find submit button and click\nawait driver.findElement(By.xpath(\"//div[@class='signup-form']/form/button\", Key.RETURN)).click()\n    \n//Is login-form visible\nconst isLoginPageVisible = await driver.findElement(By.className(\"login-form\")).isDisplayed()\n\n//Chai assert if it's not\nexpect(isLoginPageVisible).to.equal(true);\n    \n//Enter account information//\n    \n//Array for gender options\nconst genderRadio = [\"//span/input[@id='id_gender1']\", \"//span/input[@id='id_gender2']\"]\n//RNG for gender options\nconst rngGenderRadio = Math.floor(Math.random() * genderRadio.length);\n//Select gender option\nawait driver.findElement(By.xpath(genderRadio[rngGenderRadio])).click();\n    \n//Password\nawait driver.findElement(By.id(\"password\")).sendKeys(\"password\");\n    \n\n//Array for dob dropdowns\nconst dobDropdown = {\n    days: accountDetails.dob.day,\n    months: accountDetails.dob.month,\n    years: accountDetails.dob.year\n}\n\nfor (const [key, value] of Object.entries(dobDropdown)){\n    const dropdown = await driver.findElement(By.id(key));\n    const select = new Select(dropdown);\n    await select.selectByValue(value);\n};\n    \n//Sign up for the newsletter and special offers\nawait driver.findElement(By.id(\"newsletter\")).click();\nawait driver.findElement(By.id(\"optin\")).click();\n    \n//Fill in personal details\nawait driver.findElement(By.id(\"first_name\")).sendKeys(accountDetails.first_name);\nawait driver.findElement(By.id(\"last_name\")).sendKeys(accountDetails.last_name);\nawait driver.findElement(By.id(\"company\")).sendKeys(accountDetails.company);\nawait driver.findElement(By.id(\"address1\")).sendKeys(accountDetails.address);\nawait driver.findElement(By.id(\"state\")).sendKeys(accountDetails.state);\nawait driver.findElement(By.id(\"city\")).sendKeys(accountDetails.city);\nawait driver.findElement(By.id(\"zipcode\")).sendKeys(accountDetails.zipcode);\nawait driver.findElement(By.id(\"mobile_number\")).sendKeys(accountDetails.mobile_number);\n    \n//Submit account information\nawait driver.findElement(By.className(\"btn btn-default\")).click();\n    \n//Check if account was created succesfully\nconst afterAccCreation = await driver.findElement(By.xpath(\"//div/h2[@class='title text-center']\")).getText();\n    \nexpect(afterAccCreation).to.equal(\"ACCOUNT CREATED!\");\n    \n//Click continue\nawait driver.findElement(By.className(\"btn btn-primary\")).click();\n    \nconst adAfterAccCreation = await driver.getCurrentUrl()\n\nif (adAfterAccCreation.includes(\"#google_vignette\")) await driver.navigate().refresh();\n    \n//Click continue\nawait driver.findElement(By.className(\"btn btn-primary\")).click();\n\nconst pageLoadCheck = await driver.findElement(By.className(\"fa fa-user\"))\nawait driver.wait(until.elementIsVisible(pageLoadCheck), 3000)\n    \n//Check login user name\nconst userNameTextCheck = await driver.findElement(By.xpath(\"//ul[@class='nav navbar-nav']/li[10]/a/b\")).getText()\n    \nexpect(userNameTextCheck).to.equal(accountDetails.account_name);\n    \n//Close the browser\nawait driver.close()",
+              "err": {},
+              "uuid": "b48915ca-4a6a-4475-9a14-b0b4fbc0406e",
+              "parentUUID": "6625c8ca-6298-41f7-a1dc-9d479e20cc7a",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "697181df-5f09-4ef5-ade2-45e39df01a5a",
+            "b48915ca-4a6a-4475-9a14-b0b4fbc0406e"
+          ],
+          "failures": [],
+          "pending": [],
+          "skipped": [],
+          "duration": 26940,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 0
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 0
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "10.4.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": null,
+      "version": "6.2.0"
+    }
+  }
+}
