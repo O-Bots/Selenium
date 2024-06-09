@@ -5,7 +5,7 @@
   "main": "tests/firstTest.js",
   "type": "module",
   "scripts": {
-    "test": "mocha --no-timeouts --reporter mochawesome tests/*.js",
+    "test": "mocha --no-timeouts --reporter mochawesome tests/*.js --fgrep Tests_for_Website_functionality",
     "tests": "mocha --no-timeouts --parallel --reporter mochawesome --require mochawesome/register tests/*.js"
   },
   "author": "",

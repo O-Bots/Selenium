@@ -151,7 +151,7 @@ const userLogin = async (browser) => {
 };
 
 
-describe("Tests for account functionality", ()=> {
+describe("Tests_for_account_functionality", ()=> {
     
     it("Successfully registers a user and deletes account", async ()=> {
 
@@ -226,6 +226,26 @@ describe("Tests for account functionality", ()=> {
 
     });
 
+    it("Successfully logs in a registerd a user with correct details and logs the user out", async ()=> {
+
+        //Launch the chrome browser
+        let driver = await new Builder().forBrowser("chrome").build();
+        
+        //Logs in the user
+        await userLogin(driver);
+
+        //Logs the user out
+        await driver.findElement(By.xpath("//ul[@class='nav navbar-nav']/li[4]/a/i")).click();
+
+        const loginPageCheck = await driver.getCurrentUrl();
+
+        //Chai assert to check if user has been logged out
+        expect(loginPageCheck).to.equal("https://www.automationexercise.com/login")
+
+        //Close the browser
+        await driver.close();
+    });
+    
     it("Successfully logs in a registerd a user with correct details and deletes the users account", async ()=> {
 
         //Launch the chrome browser
