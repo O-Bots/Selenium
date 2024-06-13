@@ -24,7 +24,10 @@ const accountDetails = {
     mobile_number: "0123 456789"
 }
 const createUser = async (browser) => {
-
+    
+    //Moves browser window 
+    await browser.manage().window().setRect({x: 10, y: -1440 });
+    
     //Navigate to the webpage
     await browser.get(webSite);
     
@@ -121,6 +124,10 @@ const createUser = async (browser) => {
     return;
 };
 const userLogin = async (browser) => {
+
+    //Moves browser window 
+    await browser.manage().window().setRect({x: 10, y: -1440 });
+
     //Navigate to the webpage
     await browser.get(webSite);
     
@@ -193,6 +200,9 @@ describe("Tests_for_account_functionality", ()=> {
         //Launch the chrome browser
         let driver = await new Builder().forBrowser("chrome").build();
 
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+        
         //Navigate to the webpage
         await driver.get(webSite);
         

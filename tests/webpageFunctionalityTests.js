@@ -8,7 +8,6 @@ let options = new chrome.Options();
 const webSite = "https://www.automationexercise.com/"
 const upload = path.resolve("files/Binks.jpg")
 
-
 const contactUsDetails = {
     email: "Qa@Email.qa",
     first_name: "John",
@@ -24,6 +23,9 @@ describe("Tests_for_Website_functionality", () => {
         //Launch Browswer    
         let driver = new Builder().forBrowser("chrome").build();
 
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+        
         //Navigate to the webpage
         await driver.get(webSite);
 
@@ -80,6 +82,9 @@ describe("Tests_for_Website_functionality", () => {
         //Launch Browswer    
         let driver = new Builder().forBrowser("chrome").build();
 
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+
         //Navigate to the webpage
         await driver.get(webSite);
 
@@ -134,7 +139,10 @@ describe("Tests_for_Website_functionality", () => {
     it("Sucessfully navigates to the test cases page", async () => {
         //Launch Browswer    
         let driver = new Builder().forBrowser("chrome").build();
-
+        
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+        
         //Navigate to the webpage
         await driver.get(webSite);
 
@@ -153,14 +161,24 @@ describe("Tests_for_Website_functionality", () => {
     });
 
     it("Sucessfully navigates to the products page and views the first product", async () => {
-        
+
+        //Launch Browser
         let driver = await new webdriver.Builder()
             .forBrowser(webdriver.Browser.CHROME)
             .setChromeOptions(options.addExtensions("files/uBlock 24.1.1.0.crx"))
             .build();
 
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+
         //Navigate to the webpage
         await driver.get(webSite);
+
+        // await driver.executeScript("document.body.style.zoom = '0.8'");
+
+        //Is there a consent pop up, if there is select consent to close
+        const isConsentPopupVisible = await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button")).isDisplayed();
+        if (isConsentPopupVisible) await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button", Key.RETURN)).click();
 
         //Navigate to products page
         await driver.findElement(By.className("material-icons card_travel")).click();
@@ -182,7 +200,7 @@ describe("Tests_for_Website_functionality", () => {
         //Check if its the correct product
         expect(productName).to.equal(productDetailsName);
         expect(productPrice).to.equal(productDetailsPrice);
-        
+
         //Close browser
         await driver.close();
     });
