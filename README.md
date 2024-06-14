@@ -30,7 +30,7 @@ npm install
 To run the test cases, use the following command:
 
 ```bash
-npm test
+npm run test
 ```
 
 This command will execute the test cases using Mocha.js and generate a test report with Mochawesome.
