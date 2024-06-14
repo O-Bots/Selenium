@@ -1,0 +1,277 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 4,
+    "passes": 3,
+    "pending": 0,
+    "failures": 1,
+    "start": "2024-06-14T10:56:00.453Z",
+    "end": "2024-06-14T10:56:27.514Z",
+    "duration": 27061,
+    "testsRegistered": 9,
+    "passPercent": 33.33333333333333,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 5,
+    "hasSkipped": true
+  },
+  "results": [
+    {
+      "uuid": "8c57fdcc-c612-4b81-bd97-b4d55b120443",
+      "title": "",
+      "fullFile": "",
+      "file": "",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "3f951472-8890-4a99-80c8-e06ceb475dad",
+          "title": "Tests_for_account_functionality",
+          "fullFile": "C:\\Users\\Okechi\\Desktop\\Javascript\\Projects\\Selenium\\tests\\accountFunctionalityTest.js",
+          "file": "\\tests\\accountFunctionalityTest.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Successfully registers a user and deletes account",
+              "fullTitle": "Tests_for_account_functionality Successfully registers a user and deletes account",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Launch the chrome browser\n        let driver = await new Builder().forBrowser(\"chrome\").build();\n        //Create user function\n        await createUser(driver)\n        //Click delete account\n        await driver.findElement(By.xpath(\"//ul[@class='nav navbar-nav']/li[5]\")).click();\n        //Check if account was deleted succesfully\n        const afterAccDeletion = await driver.findElement(By.xpath(\"//div/h2[@class='title text-center']\")).getText();\n        \n        expect(afterAccDeletion).to.equal(\"ACCOUNT DELETED!\");\n        //Click continue\n        await driver.findElement(By.className(\"btn btn-primary\")).click();\n        //Close the browser\n        await driver.close();",
+              "err": {},
+              "uuid": "f8c2777b-c326-4aa7-8587-831faa70edde",
+              "parentUUID": null,
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Successfully registers a user",
+              "fullTitle": "Tests_for_account_functionality Successfully registers a user",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Launch the chrome browser\n        let driver = await new Builder().forBrowser(\"chrome\").build();\n        \n        //Create user function\n        await createUser(driver);\n    \n        //Close the browser\n        await driver.close();",
+              "err": {},
+              "uuid": "77e01787-14d7-4061-b166-70da9681391b",
+              "parentUUID": null,
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Successfully logs in a user with incorrect details",
+              "fullTitle": "Tests_for_account_functionality Successfully logs in a user with incorrect details",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Launch the chrome browser\n        let driver = await new Builder().forBrowser(\"chrome\").build();\n        //Moves browser window \n        await driver.manage().window().setRect({x: 10, y: -1440 });\n        \n        //Navigate to the webpage\n        await driver.get(webSite);\n        \n        //Is there a consent pop up, if there is select consent to close\n        const isConsentPopupVisible = await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\")).isDisplayed();\n        if (isConsentPopupVisible) await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\", Key.RETURN)).click();\n        //Select \"Signup/Login\"\n        await driver.findElement(By.className(\"fa fa-lock\", Key.RETURN)).click()\n        \n        //Is signup form visible\n        const isLoginVisible = await driver.findElement(By.className(\"login-form\")).isDisplayed();\n        if (isLoginVisible) {\n            //Enter Email and password\n            await driver.findElement(By.xpath(\"//div[@class='login-form']/form/input[2]\")).sendKeys(accountDetails.email)\n            await driver.findElement(By.xpath(\"//div[@class='login-form']/form/input[3]\")).sendKeys(accountDetails.password+\"s\")\n        };\n        //Find submit button and click\n        await driver.findElement(By.xpath(\"//div[@class='login-form']/form/button\", Key.RETURN)).click()\n        //Get login error text\n        const loginErrorVisible = await driver.findElement(By.xpath(\"//div[@class='login-form']/form/p\")).getText();\n        //Chai assert comparing error text to stored variable\n        expect(loginErrorVisible).to.equal(loginError);\n        //Close the browser\n        await driver.close();",
+              "err": {},
+              "uuid": "44ff350b-5b09-4046-917e-0c7c14e27494",
+              "parentUUID": null,
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Successfully logs in a registerd a user with correct details and logs the user out",
+              "fullTitle": "Tests_for_account_functionality Successfully logs in a registerd a user with correct details and logs the user out",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Launch the chrome browser\n        let driver = await new Builder().forBrowser(\"chrome\").build();\n        \n        //Logs in the user\n        await userLogin(driver);\n        //Logs the user out\n        await driver.findElement(By.xpath(\"//ul[@class='nav navbar-nav']/li[4]/a/i\")).click();\n        const loginPageCheck = await driver.getCurrentUrl();\n        //Chai assert to check if user has been logged out\n        expect(loginPageCheck).to.equal(\"https://www.automationexercise.com/login\")\n        //Close the browser\n        await driver.close();",
+              "err": {},
+              "uuid": "3184b519-daa5-44db-9994-f0d62f145d96",
+              "parentUUID": null,
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Successfully logs in a registerd a user with correct details and deletes the users account",
+              "fullTitle": "Tests_for_account_functionality Successfully logs in a registerd a user with correct details and deletes the users account",
+              "timedOut": false,
+              "duration": 0,
+              "state": null,
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Launch the chrome browser\n        let driver = await new Builder().forBrowser(\"chrome\").build();\n        \n        //Logs in the user\n        await userLogin(driver);\n        \n        //Click delete account\n        await driver.findElement(By.xpath(\"//ul[@class='nav navbar-nav']/li[5]\")).click();\n        const adAfterDeletion = await driver.getCurrentUrl()\n        \n        if (adAfterDeletion.includes(\"#google_vignette\")) await driver.navigate().refresh();\n        if (adAfterDeletion.includes(\"delete_account\")) {            \n            //Check if account was deleted succesfully\n            const afterAccDeletion = await driver.findElement(By.xpath(\"//div/h2[@class='title text-center']\")).getText();\n            \n            expect(afterAccDeletion).to.equal(\"ACCOUNT DELETED!\");\n            //Click continue\n            await driver.findElement(By.className(\"btn btn-primary\")).click();\n        };\n        \n        //Close the browser\n        await driver.close();",
+              "err": {},
+              "uuid": "e8f8a277-eeeb-4032-bbac-d0e81143721d",
+              "parentUUID": null,
+              "isHook": false,
+              "skipped": true
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [],
+          "pending": [],
+          "skipped": [
+            "f8c2777b-c326-4aa7-8587-831faa70edde",
+            "77e01787-14d7-4061-b166-70da9681391b",
+            "44ff350b-5b09-4046-917e-0c7c14e27494",
+            "3184b519-daa5-44db-9994-f0d62f145d96",
+            "e8f8a277-eeeb-4032-bbac-d0e81143721d"
+          ],
+          "duration": 0,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 0
+        },
+        {
+          "uuid": "32280ce4-abee-4640-a5a9-a603e9b961a4",
+          "title": "Tests_for_Website_functionality",
+          "fullFile": "C:\\Users\\Okechi\\Desktop\\Javascript\\Projects\\Selenium\\tests\\webpageFunctionalityTests.js",
+          "file": "\\tests\\webpageFunctionalityTests.js",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Succesfully uses the Contact Us form and navigates to home using the button in page body",
+              "fullTitle": "Tests_for_Website_functionality Succesfully uses the Contact Us form and navigates to home using the button in page body",
+              "timedOut": false,
+              "duration": 4317,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Launch Browswer    \n        let driver = new Builder().forBrowser(\"chrome\").build();\n        //Moves browser window \n        await driver.manage().window().setRect({x: 10, y: -1440 });\n        \n        //Navigate to the webpage\n        await driver.get(webSite);\n        //Is there a consent pop up, if there is select consent to close\n        const isConsentPopupVisible = await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\")).isDisplayed();\n        if (isConsentPopupVisible) await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\", Key.RETURN)).click();\n        //Click contact us link\n        await driver.findElement(By.className(\"fa fa-envelope\")).click();\n        //Is contact us form visible\n        let isContactUsFormVisible = await driver.findElement(By.id(\"contact-us-form\")).isDisplayed();\n        //Chai assert to check if contact us form is visible\n        expect(isContactUsFormVisible).to.equal(true);\n        //Send form information\n        await driver.findElement(By.xpath(\"//input[@class='form-control'][@name='name']\")).sendKeys(contactUsDetails.first_name);\n        await driver.findElement(By.xpath(\"//input[@class='form-control'][@name='email']\")).sendKeys(contactUsDetails.email);\n        await driver.findElement(By.xpath(\"//input[@class='form-control'][@name='subject']\")).sendKeys(contactUsDetails.subject);\n        await driver.findElement(By.xpath(\"//textarea[@class='form-control'][@name='message']\")).sendKeys(contactUsDetails.message);\n        await driver.findElement(By.xpath(\"//input[@class='form-control'][@name='upload_file']\")).sendKeys(upload);\n        await driver.findElement(By.xpath(\"//input[@class='btn btn-primary pull-left submit_form']\")).click();\n        //Select alert\n        let alert = await driver.switchTo().alert();\n        //Confirm alert text\n        let alertText = await alert.getText();\n        expect(alertText).to.equal(\"Press OK to proceed!\")\n        \n        //Accept alert\n        await alert.accept();\n        //Is success message visible\n        let isSuccessMessageVisible = await driver.findElement(By.className(\"status alert alert-success\")).isDisplayed()\n        //Chai assert to confirm success message\n        expect(isSuccessMessageVisible).to.equal(true);\n        //Click home Button in page body\n        await driver.findElement(By.className(homeArr[0])).click();\n        //Confirm home page is loaded\n        let logoIsVisible = await driver.findElement(By.className(\"logo pull-left\")).isDisplayed();\n        expect(logoIsVisible).to.equal(true);\n        //Close browser\n        await driver.close()",
+              "err": {},
+              "uuid": "33fdead5-1666-40b7-82c3-99b8b5aee911",
+              "parentUUID": "32280ce4-abee-4640-a5a9-a603e9b961a4",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Succesfully uses the Contact Us form and navigates to home using the button in navigation bar",
+              "fullTitle": "Tests_for_Website_functionality Succesfully uses the Contact Us form and navigates to home using the button in navigation bar",
+              "timedOut": false,
+              "duration": 4449,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Launch Browswer    \n        let driver = new Builder().forBrowser(\"chrome\").build();\n        //Moves browser window \n        await driver.manage().window().setRect({x: 10, y: -1440 });\n        //Navigate to the webpage\n        await driver.get(webSite);\n        //Is there a consent pop up, if there is select consent to close\n        const isConsentPopupVisible = await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\")).isDisplayed();\n        if (isConsentPopupVisible) await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\", Key.RETURN)).click();\n        //Click contact us link\n        await driver.findElement(By.className(\"fa fa-envelope\")).click();\n        //Is contact us form visible\n        let isContactUsFormVisible = await driver.findElement(By.id(\"contact-us-form\")).isDisplayed();\n        //Chai assert to check if contact us form is visible\n        expect(isContactUsFormVisible).to.equal(true);\n        //Send form information\n        await driver.findElement(By.xpath(\"//input[@class='form-control'][@name='name']\")).sendKeys(contactUsDetails.first_name);\n        await driver.findElement(By.xpath(\"//input[@class='form-control'][@name='email']\")).sendKeys(contactUsDetails.email);\n        await driver.findElement(By.xpath(\"//input[@class='form-control'][@name='subject']\")).sendKeys(contactUsDetails.subject);\n        await driver.findElement(By.xpath(\"//textarea[@class='form-control'][@name='message']\")).sendKeys(contactUsDetails.message);\n        await driver.findElement(By.xpath(\"//input[@class='form-control'][@name='upload_file']\")).sendKeys(upload);\n        await driver.findElement(By.xpath(\"//input[@class='btn btn-primary pull-left submit_form']\")).click();\n        //Select alert\n        let alert = await driver.switchTo().alert();\n        //Confirm alert text\n        let alertText = await alert.getText();\n        expect(alertText).to.equal(\"Press OK to proceed!\")\n        \n        //Accept alert\n        await alert.accept();\n        //Is success message visible\n        let isSuccessMessageVisible = await driver.findElement(By.className(\"status alert alert-success\")).isDisplayed()\n        //Chai assert to confirm success message\n        expect(isSuccessMessageVisible).to.equal(true);\n        //Click home Button in page body\n        await driver.findElement(By.className(homeArr[1])).click();\n        //Confirm home page is loaded\n        let logoIsVisible = await driver.findElement(By.className(\"logo pull-left\")).isDisplayed();\n        expect(logoIsVisible).to.equal(true);\n        //Close browser\n        await driver.close()",
+              "err": {},
+              "uuid": "d8083e01-c14d-4c7a-aaa9-d219867b9854",
+              "parentUUID": "32280ce4-abee-4640-a5a9-a603e9b961a4",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Sucessfully navigates to the test cases page",
+              "fullTitle": "Tests_for_Website_functionality Sucessfully navigates to the test cases page",
+              "timedOut": false,
+              "duration": 4093,
+              "state": "passed",
+              "speed": "slow",
+              "pass": true,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "//Launch Browswer    \nlet driver = new Builder().forBrowser(\"chrome\").build();\n\n//Moves browser window \nawait driver.manage().window().setRect({x: 10, y: -1440 });\n\n//Navigate to the webpage\nawait driver.get(webSite);\n//Is there a consent pop up, if there is select consent to close\nconst isConsentPopupVisible = await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\")).isDisplayed();\nif (isConsentPopupVisible) await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\", Key.RETURN)).click();\n//Navigate to test cases page\nawait driver.findElement(By.xpath(\"//div[@class='item active']/div/a[@class='test_cases_list']\")).click();\n//Confirm test case page is visible\nlet isTestCasePageVisible = await driver.findElement(By.className(\"title text-center\")).isDisplayed();\nexpect(isTestCasePageVisible).to.equal(true);\nawait driver.close();",
+              "err": {},
+              "uuid": "3b3bc280-341c-4b8d-bf95-dae2754657e8",
+              "parentUUID": "32280ce4-abee-4640-a5a9-a603e9b961a4",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Sucessfully navigates to the products page and views the first product",
+              "fullTitle": "Tests_for_Website_functionality Sucessfully navigates to the products page and views the first product",
+              "timedOut": false,
+              "duration": 14192,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "//Launch Browser\n        let driver = await new webdriver.Builder()\n            .forBrowser(webdriver.Browser.CHROME)\n            .setChromeOptions(options.addExtensions(\"files/uBlock 24.1.1.0.crx\"))\n            .build();\n        //Moves browser window \n        await driver.manage().window().setRect({x: 10, y: -1440 });\n        //Navigate to the webpage\n        await driver.get(webSite);\n        // await driver.executeScript(\"document.body.style.zoom = '0.8'\");\n        //Is there a consent pop up, if there is select consent to close\n        const isConsentPopupVisible = await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\")).isDisplayed();\n        if (isConsentPopupVisible) await driver.findElement(By.className(\"fc-button fc-cta-consent fc-primary-button\", Key.RETURN)).click();\n        //Navigate to products page\n        await driver.findElement(By.className(\"material-icons card_travel\")).click();\n        //Confirm products page is visible\n        let isProductsPageVisible = await driver.findElement(By.className(\"title text-center\")).isDisplayed();\n        expect(isProductsPageVisible).to.equal(true);\n        //Product information\n        let productName = await driver.findElement(By.xpath(\"//div[@class='features_items']/div[@class='col-sm-4'][1]/div/div/div/p\")).getText()\n        let productPrice = await driver.findElement(By.xpath(\"//div[@class='features_items']/div[@class='col-sm-4'][1]/div/div/div/h2\")).getText()\n        //View first product\n        await driver.findElement(By.xpath(\"//div[@class='features_items']/div[@class='col-sm-4'][1]/div/div[@class='choose']\")).click();\n        let productDetailsName = await driver.findElement(By.xpath(\"//div[@class='product-information']/h2\")).getText()\n        let productDetailsPrice = await driver.findElement(By.xpath(\"//div[@class='product-information']/span/span\")).getText()\n        //Check if its the correct product\n        expect(productName).to.equal(productDetailsName);\n        expect(productPrice).to.equal(productDetailsPrice);\n        //Close browser\n        await driver.close();",
+              "err": {
+                "message": "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".fc-button.fc-cta-consent.fc-primary-button\"}\n  (Session info: chrome=125.0.6422.176)",
+                "estack": "NoSuchElementError: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\".fc-button.fc-cta-consent.fc-primary-button\"}\n  (Session info: chrome=125.0.6422.176)\n    at Object.throwDecodedError (node_modules\\selenium-webdriver\\lib\\error.js:521:15)\n    at parseHttpResponse (node_modules\\selenium-webdriver\\lib\\http.js:514:13)\n    at Executor.execute (node_modules\\selenium-webdriver\\lib\\http.js:446:28)\n    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)\n    at async Driver.execute (node_modules\\selenium-webdriver\\lib\\webdriver.js:740:17)\n    at async toWireValue (node_modules\\selenium-webdriver\\lib\\webdriver.js:146:15)\n    at async C:\\Users\\Okechi\\Desktop\\Javascript\\Projects\\Selenium\\node_modules\\selenium-webdriver\\lib\\webdriver.js:192:16\n    at async forEachKey (node_modules\\selenium-webdriver\\lib\\webdriver.js:186:9)\n    at async convertKeys (node_modules\\selenium-webdriver\\lib\\webdriver.js:191:3)\n    at async Driver.execute (node_modules\\selenium-webdriver\\lib\\webdriver.js:738:22)\n    at async Context.<anonymous> (file:///C:/Users/Okechi/Desktop/Javascript/Projects/Selenium/tests/webpageFunctionalityTests.js:180:39)",
+                "diff": null
+              },
+              "uuid": "e64a15a5-4f70-4262-8335-4dbf378d52cf",
+              "parentUUID": "32280ce4-abee-4640-a5a9-a603e9b961a4",
+              "isHook": false,
+              "skipped": false
+            }
+          ],
+          "suites": [],
+          "passes": [
+            "33fdead5-1666-40b7-82c3-99b8b5aee911",
+            "d8083e01-c14d-4c7a-aaa9-d219867b9854",
+            "3b3bc280-341c-4b8d-bf95-dae2754657e8"
+          ],
+          "failures": [
+            "e64a15a5-4f70-4262-8335-4dbf378d52cf"
+          ],
+          "pending": [],
+          "skipped": [],
+          "duration": 27051,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 0
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 0
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "10.4.0"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": null,
+      "version": "6.2.0"
+    }
+  }
+}
