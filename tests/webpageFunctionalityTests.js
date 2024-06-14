@@ -15,9 +15,26 @@ const contactUsDetails = {
     message: "This is a message",
 };
 
+const adHandler = async(browser) => {
+    let iframes = await browser.findElements(By.xpath("//iframe"));
+
+    for (let iframe of iframes) {
+        try {
+            await browser.switchTo().frame(iframe);
+            await browser.switchTo().frame(browser.findElement(By.xpath("//iframe[@id='ad_iframe']")));
+            await browser.findElement(By.id("dismiss-button")).click();
+            await browser.switchTo().defaultContent();
+        } catch (error) {
+            await browser.switchTo().parentFrame();
+            continue;
+        };
+    };
+};
+
 describe("Tests_for_Website_functionality", () => {
 
     const homeArr = ["btn btn-success", "fa fa-home"]
+
     it("Succesfully uses the Contact Us form and navigates to home using the button in page body", async () => {
 
         //Launch Browswer    
@@ -162,11 +179,14 @@ describe("Tests_for_Website_functionality", () => {
 
     it("Sucessfully navigates to the products page and views the first product", async () => {
 
-        //Launch Browser
-        let driver = await new webdriver.Builder()
-            .forBrowser(webdriver.Browser.CHROME)
-            .setChromeOptions(options.addExtensions("files/uBlock 24.1.1.0.crx"))
-            .build();
+        //Launch Browser with adblock extension
+        // let driver = await new webdriver.Builder()
+        //     .forBrowser(webdriver.Browser.CHROME)
+        //     .setChromeOptions(options.addExtensions("files/uBlock 24.1.1.0.crx"))
+        //     .build();
+
+        //Launch browser
+        let driver = await new Builder().forBrowser("chrome").build();
 
         //Moves browser window 
         await driver.manage().window().setRect({x: 10, y: -1440 });
@@ -194,6 +214,9 @@ describe("Tests_for_Website_functionality", () => {
         //View first product
         await driver.findElement(By.xpath("//div[@class='features_items']/div[@class='col-sm-4'][1]/div/div[@class='choose']")).click();
 
+        await adHandler(driver)
+
+        //Product page information
         let productDetailsName = await driver.findElement(By.xpath("//div[@class='product-information']/h2")).getText()
         let productDetailsPrice = await driver.findElement(By.xpath("//div[@class='product-information']/span/span")).getText()
 

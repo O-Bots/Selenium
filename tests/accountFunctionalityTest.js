@@ -123,6 +123,7 @@ const createUser = async (browser) => {
     expect(userNameTextCheck).to.equal(accountDetails.account_name);
     return;
 };
+
 const userLogin = async (browser) => {
 
     //Moves browser window 
@@ -157,6 +158,21 @@ const userLogin = async (browser) => {
     return;
 };
 
+const adHandler = async(browser) => {
+    let iframes = await browser.findElements(By.xpath("//iframe"));
+
+    for (let iframe of iframes) {
+        try {
+            await browser.switchTo().frame(iframe);
+            await browser.switchTo().frame(browser.findElement(By.xpath("//iframe[@id='ad_iframe']")));
+            await browser.findElement(By.id("dismiss-button")).click();
+            await browser.switchTo().defaultContent();
+        } catch (error) {
+            await browser.switchTo().parentFrame();
+            continue;
+        };
+    };
+};
 
 describe("Tests_for_account_functionality", ()=> {
     
