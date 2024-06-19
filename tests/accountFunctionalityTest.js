@@ -107,12 +107,7 @@ const createUser = async (browser) => {
     //Click continue
     await browser.findElement(By.className("btn btn-primary")).click();
 
-    const adAfterAccCreation = await browser.getCurrentUrl()
-    
-    if (adAfterAccCreation.includes("#google_vignette")) await browser.navigate().refresh();
-
-    //Click continue
-    await browser.findElement(By.className("btn btn-primary")).click();
+    await adHandler(browser);
     
     const pageLoadCheck = await browser.findElement(By.className("fa fa-user"))
     await browser.wait(until.elementIsVisible(pageLoadCheck), 3000)
@@ -164,7 +159,6 @@ const adHandler = async(browser) => {
     for (let iframe of iframes) {
         try {
             await browser.switchTo().frame(iframe);
-            await browser.switchTo().frame(browser.findElement(By.xpath("//iframe[@id='ad_iframe']")));
             await browser.findElement(By.id("dismiss-button")).click();
             await browser.switchTo().defaultContent();
         } catch (error) {
@@ -175,7 +169,7 @@ const adHandler = async(browser) => {
 };
 
 describe("Tests_for_account_functionality", ()=> {
-    
+
     it("Successfully registers a user and deletes account", async ()=> {
 
         //Launch the chrome browser
@@ -283,21 +277,17 @@ describe("Tests_for_account_functionality", ()=> {
         //Click delete account
         await driver.findElement(By.xpath("//ul[@class='nav navbar-nav']/li[5]")).click();
 
-        const adAfterDeletion = await driver.getCurrentUrl()
-        
-        if (adAfterDeletion.includes("#google_vignette")) await driver.navigate().refresh();
+        await adHandler(driver);
 
-        if (adAfterDeletion.includes("delete_account")) {            
-            //Check if account was deleted succesfully
-            const afterAccDeletion = await driver.findElement(By.xpath("//div/h2[@class='title text-center']")).getText();
-            
-            expect(afterAccDeletion).to.equal("ACCOUNT DELETED!");
-            //Click continue
-            await driver.findElement(By.className("btn btn-primary")).click();
-        };
+        //Check if account was deleted succesfully
+        const afterAccDeletion = await driver.findElement(By.xpath("//div/h2[@class='title text-center']")).getText();
+        
+        expect(afterAccDeletion).to.equal("ACCOUNT DELETED!");
+        //Click continue
+        await driver.findElement(By.className("btn btn-primary")).click();
         
         //Close the browser
         await driver.close();
-
     });
+
 });

@@ -1,10 +1,9 @@
 import * as webdriver from "selenium-webdriver";
 import {By, Key, Builder} from 'selenium-webdriver';
-import * as chrome from "selenium-webdriver/chrome.js"
 import {expect} from 'chai';
 import * as path from 'path';
 
-let options = new chrome.Options();
+
 const webSite = "https://www.automationexercise.com/"
 const upload = path.resolve("files/Binks.jpg")
 
@@ -21,7 +20,6 @@ const adHandler = async(browser) => {
     for (let iframe of iframes) {
         try {
             await browser.switchTo().frame(iframe);
-            await browser.switchTo().frame(browser.findElement(By.xpath("//iframe[@id='ad_iframe']")));
             await browser.findElement(By.id("dismiss-button")).click();
             await browser.switchTo().defaultContent();
         } catch (error) {
@@ -179,12 +177,6 @@ describe("Tests_for_Website_functionality", () => {
 
     it("Sucessfully navigates to the products page and views the first product", async () => {
 
-        //Launch Browser with adblock extension
-        // let driver = await new webdriver.Builder()
-        //     .forBrowser(webdriver.Browser.CHROME)
-        //     .setChromeOptions(options.addExtensions("files/uBlock 24.1.1.0.crx"))
-        //     .build();
-
         //Launch browser
         let driver = await new Builder().forBrowser("chrome").build();
 
@@ -193,8 +185,6 @@ describe("Tests_for_Website_functionality", () => {
 
         //Navigate to the webpage
         await driver.get(webSite);
-
-        // await driver.executeScript("document.body.style.zoom = '0.8'");
 
         //Is there a consent pop up, if there is select consent to close
         const isConsentPopupVisible = await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button")).isDisplayed();
@@ -227,4 +217,80 @@ describe("Tests_for_Website_functionality", () => {
         //Close browser
         await driver.close();
     });
+
+    it("Sucessfully uses the search function to find a product", async ()=> {
+
+        //Launch Browswer    
+        const driver = new Builder().forBrowser("chrome").build();
+
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+        
+        //Navigate to the webpage
+        await driver.get(webSite);
+
+        //Is there a consent pop up, if there is select consent to close
+        const isConsentPopupVisible = await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button")).isDisplayed();
+        if (isConsentPopupVisible) await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button", Key.RETURN)).click();
+
+        //Navigate to products page
+        await driver.findElement(By.className("material-icons card_travel")).click();
+
+        //Confirm products page is visible
+        const isProductsPageVisible = await driver.findElement(By.className("title text-center")).isDisplayed();
+        expect(isProductsPageVisible).to.equal(true);
+
+        //Gather product name information
+        const getProductName = async (browser) =>{
+            const products = await browser.findElements(By.xpath("//div[@class='productinfo text-center']/p"));
+            const rngProduct = Math.floor(Math.random() * products.length);
+            const productName = await products[rngProduct].getText();
+            console.log(productName);
+            return productName;
+        };
+        const returnedProductName = await getProductName(driver)
+
+        //Search for random product 
+        await driver.findElement(By.id("search_product")).sendKeys(returnedProductName);
+        await driver.findElement(By.id("submit_search")).click();
+        
+        //Product page information
+        const productNameConfirm = await driver.findElement(By.xpath("//div[@class='productinfo text-center']/p")).getText();
+
+        expect(productNameConfirm).to.equal(returnedProductName);
+
+        //Close browser
+        await driver.close();
+    });
+
+    it("Successfully uses the subscribe for recent updates function", async () => {
+        //Launch Browswer    
+        let driver = new Builder().forBrowser("chrome").build();
+
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+        
+        //Navigate to the webpage
+        await driver.get(webSite);
+
+        //Is there a consent pop up, if there is select consent to close
+        const isConsentPopupVisible = await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button")).isDisplayed();
+        if (isConsentPopupVisible) await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button", Key.RETURN)).click();
+
+        //Find and scroll to the subscribe box
+        const subscribeBox = await driver.findElement(By.id("susbscribe_email"));
+        await driver.actions().scroll(0,0,0,200, subscribeBox).perform();
+
+        //Enter email information
+        await driver.findElement(By.id("susbscribe_email")).sendKeys(contactUsDetails.email);
+        await driver.findElement(By.id("subscribe")).click();
+
+        //confirm subscription
+        const subscribeConfirm = await driver.findElement(By.className("alert-success alert")).isDisplayed();
+        expect(subscribeConfirm).to.equal(true);
+
+        //Close browser
+        await driver.close()
+    });
+
 });
