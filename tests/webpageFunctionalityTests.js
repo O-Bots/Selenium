@@ -293,4 +293,114 @@ describe("Tests_for_Website_functionality", () => {
         await driver.close()
     });
 
+    it("Successfully uses the subscribe for recent updates function on the cart page", async () => {
+        //Launch Browswer    
+        let driver = new Builder().forBrowser("chrome").build();
+
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+        
+        //Navigate to the webpage
+        await driver.get(webSite);
+
+        //Is there a consent pop up, if there is select consent to close
+        const isConsentPopupVisible = await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button")).isDisplayed();
+        if (isConsentPopupVisible) await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button", Key.RETURN)).click();
+
+        //Click on the cart link
+        await driver.findElement(By.className("fa fa-shopping-cart")).click();
+
+        //Verify it's the correct page
+        const cartUrl = await driver.getCurrentUrl();
+        expect(cartUrl).to.include("view_cart");
+
+        //Find and scroll to the subscribe box
+        const subscribeBoxScroll = await driver.findElement(By.xpath("//div[@class='single-widget']/h2"));
+        await driver.actions().scroll(0,0,0,200, subscribeBoxScroll).perform();
+
+        //Find and scroll to the subscribe box
+        const subscribeBox = await driver.findElement(By.id("susbscribe_email"));
+        await driver.actions().scroll(0,0,0,200, subscribeBox).perform();
+
+        //Enter email information
+        await driver.findElement(By.id("susbscribe_email")).sendKeys(contactUsDetails.email);
+        await driver.findElement(By.id("subscribe")).click();
+
+        //confirm subscription
+        const subscribeConfirm = await driver.findElement(By.className("alert-success alert")).isDisplayed();
+        expect(subscribeConfirm).to.equal(true);
+
+        //Close browser
+        await driver.close()
+    });
+
+    it("Sucessfully navigates to the products page and adds products to the cart", async () => {
+
+        //Launch browser
+        let driver = await new Builder().forBrowser("chrome").build();
+
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+
+        //Navigate to the webpage
+        await driver.get(webSite);
+
+        //Is there a consent pop up, if there is select consent to close
+        const isConsentPopupVisible = await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button")).isDisplayed();
+        if (isConsentPopupVisible) await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button", Key.RETURN)).click();
+
+        //Navigate to products page
+        await driver.findElement(By.className("material-icons card_travel")).click();
+
+        //Confirm products page is visible
+        const isProductsPageVisible = await driver.findElement(By.className("title text-center")).isDisplayed();
+        expect(isProductsPageVisible).to.equal(true);
+
+        //Putting the products into the cart
+        //first product
+        //Creating variables to store product name and price, this will be used to confirm the correct products have been sent to the cart
+        const firstProductName = await driver.findElement(By.xpath("//div[@class ='features_items']/div[2]//div[@class='productinfo text-center']/p")).getText();
+        const firstProductPrice = await driver.findElement(By.xpath("//div[@class ='features_items']/div[2]//div[@class='productinfo text-center']/h2")).getText();
+        await driver.findElement(By.xpath("//div[@class ='features_items']/div[2]//div[@class='productinfo text-center']/a[@class='btn btn-default add-to-cart']")).click();
+
+        //Wait for modal to be clickable
+        await driver.sleep(1000)
+
+        //Click continue shopping
+        await driver.findElement(By.className("btn btn-success close-modal btn-block")).click();
+
+        //Second product
+        const secondProductName = await driver.findElement(By.xpath("//div[@class ='features_items']/div[3]//div[@class='productinfo text-center']/p")).getText();
+        const secondProductPrice = await driver.findElement(By.xpath("//div[@class ='features_items']/div[3]//div[@class='productinfo text-center']/h2")).getText();
+        await driver.findElement(By.xpath("//div[@class ='features_items']/div[3]//div[@class='productinfo text-center']/a[@class='btn btn-default add-to-cart']")).click();
+
+        //Wait for modal to be clickable
+        await driver.sleep(1000)
+
+        //Click continue shopping
+        await driver.findElement(By.className("btn btn-success close-modal btn-block")).click();
+
+        //Navigate to the cart
+        await driver.findElement(By.className("fa fa-shopping-cart")).click();
+
+        //Confirm that products are correct
+        const firstCartItemName = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[2]/h4/a")).getText();
+        const firstCartItemPrice = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[3]/p")).getText();
+        const firstCartItemQuantity = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[4]/button")).getText();
+
+        const secondCartItemName = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[2]/td[2]/h4/a")).getText();
+        const secondCartItemPrice = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[2]/td[3]/p")).getText();
+        const secondCartItemQuantity = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[2]/td[4]/button")).getText();
+        
+        expect(firstCartItemName).to.equal(firstProductName);
+        expect(firstCartItemPrice).to.equal(firstProductPrice);
+        expect(firstCartItemQuantity).to.equal("1");
+        expect(secondCartItemName).to.equal(secondProductName);
+        expect(secondCartItemPrice).to.equal(secondProductPrice);
+        expect(secondCartItemQuantity).to.equal("1");
+
+        //Close browser
+        await driver.close();
+    });
+    
 });
