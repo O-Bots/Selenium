@@ -22,7 +22,7 @@ const accountDetails = {
     city: "Capitol City",
     zipcode: "0sh 14a",
     mobile_number: "0123 456789"
-}
+};
 const createUser = async (browser) => {
     
     //Moves browser window 
