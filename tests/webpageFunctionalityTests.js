@@ -1353,8 +1353,10 @@ describe("Tests_for_Website_functionality", () => {
 
         //Select a category
         await driver.findElement(By.xpath("//div[@class='panel-group category-products']/div[1]/div[1]/h4/a")).click();
-        await driver.sleep(500);
+        await driver.sleep(1000);
         await driver.findElement(By.xpath("//*[@id='Women']/div/ul/li[2]/a")).click();
+
+        await adHandler(driver);
 
         //Confirm that page is correct
         const womenCategoryConfirm = await driver.findElement(By.className("title text-center")).getText();
