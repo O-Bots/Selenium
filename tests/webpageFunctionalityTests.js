@@ -1,7 +1,7 @@
-import * as webdriver from "selenium-webdriver";
 import {By, Key, Builder, Select, until} from 'selenium-webdriver';
 import {expect} from 'chai';
 import * as path from 'path';
+
 
 
 const webSite = "https://www.automationexercise.com/"
@@ -1335,4 +1335,341 @@ describe("Tests_for_Website_functionality", () => {
         //Close browser
         await driver.close();
     });
+
+    it("Sucessfully view product categories", async () => {
+
+        //Launch browser
+        let driver = await new Builder().forBrowser("chrome").build();
+
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+
+        //Navigate to the webpage
+        await driver.get(webSite);
+
+        //Is there a consent pop up, if there is select consent to close
+        const isConsentPopupVisible = await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button")).isDisplayed();
+        if (isConsentPopupVisible) await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button", Key.RETURN)).click();
+
+        //Select a category
+        await driver.findElement(By.xpath("//div[@class='panel-group category-products']/div[1]/div[1]/h4/a")).click();
+        await driver.sleep(500);
+        await driver.findElement(By.xpath("//*[@id='Women']/div/ul/li[2]/a")).click();
+
+        //Confirm that page is correct
+        const womenCategoryConfirm = await driver.findElement(By.className("title text-center")).getText();
+        expect(womenCategoryConfirm.replace(/ /g,'')).to.equal("WOMEN - TOPS PRODUCTS".replace(/ /g,''));
+
+        //Select another category
+        await driver.findElement(By.xpath("//div[@class='panel-group category-products']/div[2]/div[1]/h4/a")).click();
+        await driver.sleep(500);
+        await driver.findElement(By.xpath("//*[@id='Men']/div/ul/li[1]/a")).click();
+
+        await adHandler(driver);
+        
+        //Confirm that page is correct
+        const menCategoryConfirm = await driver.findElement(By.className("title text-center")).getText();
+        expect(menCategoryConfirm.replace(/ /g,'')).to.equal("MEN - TSHIRTS PRODUCTS".replace(/ /g,''));
+
+        //Close browser
+        await driver.close();
+    });
+
+    it("Sucessfully view and interact with brands via product page", async () => {
+
+        //Launch browser
+        let driver = await new Builder().forBrowser("chrome").build();
+
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+
+        //Navigate to the webpage
+        await driver.get(webSite);
+
+        //Is there a consent pop up, if there is select consent to close
+        const isConsentPopupVisible = await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button")).isDisplayed();
+        if (isConsentPopupVisible) await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button", Key.RETURN)).click();
+
+        //Navigate to products page
+        await driver.findElement(By.className("material-icons card_travel")).click();
+
+        //Confirm products page is visible
+        const isProductsPageVisible = await driver.findElement(By.className("title text-center")).isDisplayed();
+        expect(isProductsPageVisible).to.equal(true);
+
+        //Confirm Brands is visible
+        const isBrandsVisible = await driver.findElement(By.xpath("//div[@class='left-sidebar']/div[2]/h2")).isDisplayed();
+        expect(isBrandsVisible).to.equal(true)
+
+        //Select a brand
+        const firstBrand = await driver.findElement(By.xpath("//div[@class='brands-name']/ul/li[2]/a")).getText();
+        await driver.findElement(By.xpath("//div[@class='brands-name']/ul/li[2]")).click();
+
+        await adHandler(driver);
+        
+        //Confirm brand is correct
+        const isBrandPageCorrect = await driver.findElement(By.xpath("//div[@class='features_items']/h2")).getText();
+        expect(isBrandPageCorrect.replace(/ /g,'')).to.include(firstBrand.replace(/.*\n/, ''));
+
+        //Select second brand
+        const secondBrand = await driver.findElement(By.xpath("//div[@class='brands-name']/ul/li[3]/a")).getText();
+        await driver.findElement(By.xpath("//div[@class='brands-name']/ul/li[3]")).click();
+
+        //Confirm second brand is correct
+        const isSecondBrandPageCorrect = await driver.findElement(By.xpath("//div[@class='features_items']/h2")).getText();
+        expect(isSecondBrandPageCorrect.replace(/ /g,'')).to.include(secondBrand.replace(/.*\n/, ''));
+
+        //Close browser
+        await driver.close();
+    });
+
+    it("Successfully registers a user", async ()=> {
+
+        //Launch the chrome browser
+        let driver = await new Builder().forBrowser("chrome").build();
+        
+        //Create user function
+        await createUser(driver);
+    
+        //Close the browser
+        await driver.close();
+    });
+
+    it("Sucessfully searches products and verify cart after login", async ()=> {
+
+        //Launch Browswer    
+        const driver = new Builder().forBrowser("chrome").build();
+
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+        
+        //Navigate to the webpage
+        await driver.get(webSite);
+
+        //Is there a consent pop up, if there is select consent to close
+        const isConsentPopupVisible = await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button")).isDisplayed();
+        if (isConsentPopupVisible) await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button", Key.RETURN)).click();
+
+        //Navigate to products page
+        await driver.findElement(By.className("material-icons card_travel")).click();
+
+        //Confirm products page is visible
+        const isProductsPageVisible = await driver.findElement(By.className("title text-center")).isDisplayed();
+        expect(isProductsPageVisible).to.equal(true);
+
+        //Gather product name information
+        const getProductName = async (browser) =>{
+            const products = await browser.findElements(By.xpath("//div[@class='productinfo text-center']/p"));
+            const rngProduct = Math.floor(Math.random() * products.length);
+            const productName = await products[rngProduct].getText();
+            console.log(productName);
+            return productName;
+        };
+        const returnedProductName = await getProductName(driver)
+
+        //Search for random product 
+        await driver.findElement(By.id("search_product")).sendKeys(returnedProductName);
+        await driver.findElement(By.id("submit_search")).click();
+        
+        //Product page information
+        const productNameConfirm = await driver.findElement(By.xpath("//div[@class='productinfo text-center']/p")).getText();
+
+        expect(productNameConfirm).to.equal(returnedProductName);
+
+        //Putting the product into the cart
+        //Creating variables to store product name and price, this will be used to confirm the correct products have been sent to the cart
+        const productName = await driver.findElement(By.xpath("//div[@class ='features_items']/div[2]//div[@class='productinfo text-center']/p")).getText();
+        const productPrice = await driver.findElement(By.xpath("//div[@class ='features_items']/div[2]//div[@class='productinfo text-center']/h2")).getText();
+        await driver.findElement(By.xpath("//div[@class ='features_items']/div[2]//div[@class='productinfo text-center']/a[@class='btn btn-default add-to-cart']")).click();
+
+        //Wait for modal to be clickable
+        await driver.sleep(1000)
+
+        //Click continue shopping
+        await driver.findElement(By.className("btn btn-success close-modal btn-block")).click();
+
+        //Navigate to the cart
+        await driver.findElement(By.className("fa fa-shopping-cart")).click();
+
+        //Confirm that products are correct
+        const cartItemName = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[2]/h4/a")).getText();
+        const cartItemPrice = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[3]/p")).getText();
+        const cartItemQuantity = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[4]/button")).getText();
+
+        expect(cartItemName).to.equal(productName);
+        expect(cartItemPrice).to.equal(productPrice);
+        expect(cartItemQuantity).to.equal("1");
+
+        //Login to an account
+        //Select "Signup/Login"
+        await driver.findElement(By.className("fa fa-lock", Key.RETURN)).click()
+        
+        //Is signup form visible
+        const isLoginVisible = await driver.findElement(By.className("login-form")).isDisplayed();
+
+        if (isLoginVisible) {
+            //Enter Email and password
+            await driver.findElement(By.xpath("//div[@class='login-form']/form/input[2]")).sendKeys(accountDetails.email)
+            await driver.findElement(By.xpath("//div[@class='login-form']/form/input[3]")).sendKeys(accountDetails.password)
+        };
+
+        //Find submit button and click
+        await driver.findElement(By.xpath("//div[@class='login-form']/form/button", Key.RETURN)).click()
+
+        //Check login user name
+        const userNameTextCheck = await driver.findElement(By.xpath("//ul[@class='nav navbar-nav']/li[10]/a/b")).getText()
+
+        expect(userNameTextCheck).to.equal(accountDetails.account_name);
+
+        //Navigate to the cart
+        await driver.findElement(By.className("fa fa-shopping-cart")).click();
+
+        //Confirm that products are correct
+        const cartItemNameSecondCheck = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[2]/h4/a")).getText();
+        const cartItemPriceSecondCheck = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[3]/p")).getText();
+        const cartItemQuantitySecondCheck = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[4]/button")).getText();
+
+        expect(cartItemNameSecondCheck).to.equal(productName);
+        expect(cartItemPriceSecondCheck).to.equal(productPrice);
+        expect(cartItemQuantitySecondCheck).to.equal("1");
+
+        //Click delete account
+        await driver.findElement(By.xpath("//ul[@class='nav navbar-nav']/li[5]")).click();
+
+        await adHandler(driver);
+
+        //Check if account was deleted succesfully
+        const afterAccDeletion = await driver.findElement(By.xpath("//div/h2[@class='title text-center']")).getText();
+        
+        expect(afterAccDeletion).to.equal("ACCOUNT DELETED!");
+
+        //Click continue
+        await driver.findElement(By.className("btn btn-primary")).click();
+
+        //Close the browser
+        await driver.close();
+    });
+
+    it("Successfully adds a review on a product", async () => {
+        //Launch Browswer    
+        const driver = new Builder().forBrowser("chrome").build();
+
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+        
+        //Navigate to the webpage
+        await driver.get(webSite);
+
+        //Is there a consent pop up, if there is select consent to close
+        const isConsentPopupVisible = await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button")).isDisplayed();
+        if (isConsentPopupVisible) await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button", Key.RETURN)).click();
+
+        //Navigate to products page
+        await driver.findElement(By.className("material-icons card_travel")).click();
+
+        //Confirm products page is visible
+        const isProductsPageVisible = await driver.findElement(By.className("title text-center")).isDisplayed();
+        expect(isProductsPageVisible).to.equal(true);
+
+        //Gather product name information
+        const getProductName = async (browser) =>{
+            const products = await browser.findElements(By.xpath("//div[@class='productinfo text-center']/p"));
+            const rngProduct = Math.floor(Math.random() * products.length);
+            const productName = await products[rngProduct].getText();
+            console.log(productName);
+            return productName;
+        };
+        const returnedProductName = await getProductName(driver)
+
+        //Search for random product 
+        await driver.findElement(By.id("search_product")).sendKeys(returnedProductName);
+        await driver.findElement(By.id("submit_search")).click();
+        
+        //Product page information
+        const productNameConfirm = await driver.findElement(By.xpath("//div[@class='productinfo text-center']/p")).getText();
+
+        expect(productNameConfirm).to.equal(returnedProductName);
+
+        //Click on view product
+        await driver.findElement(By.className("nav nav-pills nav-justified")).click();
+
+        await adHandler(driver);
+
+        //Check if write your review is visible
+        const isWriteYourReviewVisible = await driver.findElement(By.xpath("//div[@class='category-tab shop-details-tab']/div[1]/ul/li")).isDisplayed();
+        expect(isWriteYourReviewVisible).to.equal(true);
+
+        //Enter review details
+        await driver.findElement(By.xpath("//form[@id='review-form']//input[@id='name']")).sendKeys(accountDetails.first_name, accountDetails.last_name);
+        await driver.findElement(By.xpath("//form[@id='review-form']//input[@id='email']")).sendKeys(accountDetails.email);
+        await driver.findElement(By.xpath("//form[@id='review-form']//textarea[@id='review']")).sendKeys("Review Information");
+        await driver.findElement(By.xpath("//form[@id='review-form']/button[@id='button-review']")).click();
+
+        await driver.sleep(200);
+        const reviewSuccessMessage = await driver.findElement(By.xpath("//form[@id='review-form']//div[@class='alert-success alert']")).isDisplayed();
+        expect(reviewSuccessMessage).to.equal(true);
+
+        //Close the browser
+        await driver.close();
+    });
+
+    it("Successfully adds to the cart from Recommended items", async () => {
+        //Launch Browswer    
+        let driver = new Builder().forBrowser("chrome").build();
+
+        //Moves browser window 
+        await driver.manage().window().setRect({x: 10, y: -1440 });
+        
+        //Navigate to the webpage
+        await driver.get(webSite);
+
+        //Is there a consent pop up, if there is select consent to close
+        const isConsentPopupVisible = await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button")).isDisplayed();
+        if (isConsentPopupVisible) await driver.findElement(By.className("fc-button fc-cta-consent fc-primary-button", Key.RETURN)).click();
+
+        //Find and scroll to the recommended items
+        const recommendedItems = await driver.findElement(By.className("recommended_items"));
+        await driver.actions().scroll(0,0,0,200, recommendedItems).perform();
+
+
+        //Add item to cart
+        //Store item information to verify later
+        const productName = await driver.findElement(By.xpath("//div[@class ='item active']//div[@class='productinfo text-center']/p")).getText();
+        const productPrice = await driver.findElement(By.xpath("//div[@class ='item active']//div[@class='productinfo text-center']/h2")).getText();
+        await driver.findElement(By.xpath("//div[@class ='item active']//div[@class='productinfo text-center']/a[@class='btn btn-default add-to-cart']")).click();
+
+        //Wait for modal to be clickable
+        await driver.sleep(1000)
+
+        //Click continue shopping
+        await driver.findElement(By.className("btn btn-success close-modal btn-block")).click();
+
+
+        //Find and scroll to the the top
+        const navigationBar = await driver.findElement(By.className("nav navbar-nav"));
+        await driver.actions().scroll(0,0,0,0, navigationBar).perform();
+
+        //Bypass dropdown advert
+        await driver.sleep(1000)
+        await driver.actions().scroll(0,0,0,200, recommendedItems).perform();
+        await driver.sleep(1000)
+        await driver.actions().scroll(0,0,0,0, navigationBar).perform();
+
+
+        //Navigate to the cart
+        await driver.findElement(By.className("fa fa-shopping-cart")).click();
+
+        //Confirm that products are correct
+        const cartItemName = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[2]/h4/a")).getText();
+        const cartItemPrice = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[3]/p")).getText();
+        const cartItemQuantity = await driver.findElement(By.xpath("//table[@class='table table-condensed']/tbody/tr[1]/td[4]/button")).getText();
+
+        expect(cartItemName).to.equal(productName);
+        expect(cartItemPrice).to.equal(productPrice);
+        expect(cartItemQuantity).to.equal("1");
+
+        //Close browser
+        await driver.close();
+    });
+
 });
